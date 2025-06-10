@@ -8,6 +8,8 @@ on:
 jobs:
   terraform:
     runs-on: ubuntu-latest
+    env:
+      TF_VAR_bucket_name: ${{ secrets.BUCKET_NAME }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -29,9 +31,9 @@ jobs:
 
       - name: Import existing S3 bucket (only if it exists)
         run: |
-            if aws s3api head-bucket --bucket disaenz-temp-s3-12345 2>/dev/null; then
+            if aws s3api head-bucket --bucket "$TF_VAR_bucket_name" 2>/dev/null; then
                 echo "Bucket exists → importing into state"
-                terraform import aws_s3_bucket.static_site disaenz-temp-s3-12345
+                terraform import aws_s3_bucket.static_site "$TF_VAR_bucket_name"
             else
                 echo "Bucket does not exist → skipping import"
             fi

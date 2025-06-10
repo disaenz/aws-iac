@@ -3,6 +3,6 @@ provider "aws" {
 }
 
 resource "aws_s3_bucket" "static_site" {
-  bucket = "disaenz-temp-s3-12345"
+  bucket = var.bucket_name
 }
 
