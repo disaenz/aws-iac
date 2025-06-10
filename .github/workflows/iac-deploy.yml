@@ -27,10 +27,13 @@ jobs:
       - name: Terraform Init
         run: terraform init
 
-      - name: Import existing S3 bucket (if not in state)
+      - name: Import existing S3 bucket (only if it exists)
         run: |
-            if ! terraform state list | grep -q aws_s3_bucket.static_site; then
+            if aws s3api head-bucket --bucket disaenz-temp-s3-12345 2>/dev/null; then
+                echo "Bucket exists → importing into state"
                 terraform import aws_s3_bucket.static_site disaenz-temp-s3-12345
+            else
+                echo "Bucket does not exist → skipping import"
             fi
 
       - name: Terraform Plan
