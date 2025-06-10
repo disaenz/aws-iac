@@ -27,6 +27,12 @@ jobs:
       - name: Terraform Init
         run: terraform init
 
+      - name: Import existing S3 bucket (if not in state)
+        run: |
+            if ! terraform state list | grep -q aws_s3_bucket.static_site; then
+                terraform import aws_s3_bucket.static_site disaenz-temp-s3-12345
+            fi
+
       - name: Terraform Plan
         run: terraform plan -out=tfplan
 
