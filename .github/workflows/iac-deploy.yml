@@ -13,6 +13,7 @@ concurrency:
 
 jobs:
   terraform:
+    name: 🔨 Terraform IaC Pipeline
     runs-on: ubuntu-latest
     env:
       TF_VAR_bucket_name: ${{ secrets.BUCKET_NAME }}
