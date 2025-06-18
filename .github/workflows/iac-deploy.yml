@@ -1,4 +1,4 @@
-name: IaC Deploy (dev)
+name: 🚀 CI/CD Pipeline for IaC
 
 on:
   push:
