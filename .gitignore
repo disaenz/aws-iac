@@ -1,4 +1,10 @@
 .terraform/
+tfplan
 *.tfstate
 *.tfstate.*
 crash.log
+
+
+# Local helpers & env scripts
+run-iac.sh
+.env

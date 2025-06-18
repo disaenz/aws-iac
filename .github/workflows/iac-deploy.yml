@@ -1,0 +1,53 @@
+name: 🏗️ CI/CD Pipeline for IaC
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+concurrency:
+  group: aws-iac-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  terraform:
+    name: 🔨 Terraform IaC Pipeline
+    runs-on: ubuntu-latest
+    env:
+      TF_VAR_bucket_name: ${{ secrets.BUCKET_NAME }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id:     ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region:            ${{ secrets.AWS_REGION }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: "1.5.7"
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Import existing S3 bucket (only if it exists)
+        run: |
+          if aws s3api head-bucket --bucket "$TF_VAR_bucket_name" 2>/dev/null; then
+            echo "Bucket exists → importing into state"
+            terraform import aws_s3_bucket.static_site "$TF_VAR_bucket_name"
+          else
+            echo "Bucket does not exist → skipping import"
+          fi
+
+      - name: Terraform Plan
+        run: terraform plan -out=tfplan
+
+      - name: Terraform Apply
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+        run: terraform apply -input=false -auto-approve tfplan
