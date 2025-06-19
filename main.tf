@@ -65,6 +65,13 @@ data "aws_iam_policy_document" "oai_policy" {
 resource "aws_s3_bucket_policy" "static_site_policy" {
   bucket = aws_s3_bucket.static_site.id
   policy = data.aws_iam_policy_document.oai_policy.json
+
+  lifecycle {
+    ignore_changes = [
+      # Ignore updates to the Principal section of the policy JSON
+      policy,
+    ]
+  }
 }
 
 #---------------------------------

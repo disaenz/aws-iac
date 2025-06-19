@@ -53,6 +53,13 @@ jobs:
           --output text || echo "")
         echo "DISTRIBUTION_ID=$DISTRIBUTION_ID" >> $GITHUB_ENV
 
+        # Hosted Zone ID
+        HOSTED_ZONE_ID=$(aws route53 list-hosted-zones-by-name \
+          --dns-name $DOMAIN \
+          --query "HostedZones[0].Id" \
+          --output text | cut -d'/' -f3 || echo "")
+        echo "HOSTED_ZONE_ID=$HOSTED_ZONE_ID" >> $GITHUB_ENV
+
     - name: Import existing resources into state
       run: |
         # Import S3 bucket and configs
@@ -71,6 +78,12 @@ jobs:
         # Import CloudFront Distribution
         if [[ -n "$DISTRIBUTION_ID" && "$DISTRIBUTION_ID" != "None" ]]; then
           terraform import aws_cloudfront_distribution.static_site $DISTRIBUTION_ID
+        fi
+
+        # Import Route53 Alias records
+        if [[ -n "$HOSTED_ZONE_ID" && "$HOSTED_ZONE_ID" != "None" ]]; then
+          terraform import aws_route53_record.root_alias  ${HOSTED_ZONE_ID}_daniel-saenz.com_A || true
+          terraform import aws_route53_record.www_alias   ${HOSTED_ZONE_ID}_www.daniel-saenz.com_A || true
         fi
 
     - name: Terraform Plan
