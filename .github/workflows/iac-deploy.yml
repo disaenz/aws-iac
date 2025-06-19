@@ -73,8 +73,13 @@ jobs:
             if ! terraform state list | grep -q '^aws_s3_bucket_website_configuration\.static_site$'; then
               terraform import aws_s3_bucket_website_configuration.static_site $TF_VAR_bucket_name
             fi
-            if ! terraform state list | grep -q '^aws_s3_bucket_policy\.static_site_policy$'; then
-              terraform import aws_s3_bucket_policy.static_site_policy $TF_VAR_bucket_name
+            # Import S3 bucket policy only if it actually exists
+            if aws s3api get-bucket-policy --bucket "$TF_VAR_bucket_name" --region "$AWS_REGION" 2>/dev/null; then
+              if ! terraform state list | grep -q '^aws_s3_bucket_policy\.static_site_policy$'; then
+                terraform import aws_s3_bucket_policy.static_site_policy $TF_VAR_bucket_name
+              fi
+            else
+              echo "No bucket policy found for $TF_VAR_bucket_name, skipping import of aws_s3_bucket_policy.static_site_policy"
             fi
           fi
 
