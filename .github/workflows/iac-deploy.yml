@@ -83,30 +83,16 @@ jobs:
           terraform import aws_cloudfront_distribution.static_site $DISTRIBUTION_ID
         fi
 
-        # Import Route53 Alias records if they exist, else remove state entry
+        # Import Route53 records
         if [[ -n "$HOSTED_ZONE_ID" && "$HOSTED_ZONE_ID" != "None" ]]; then
-          # Check root record exists
-          ROOT_COUNT=$(aws route53 list-resource-record-sets \
-            --hosted-zone-id "$HOSTED_ZONE_ID" \
-            --query "ResourceRecordSets[?Name=='${DOMAIN}.'] | length(@)" \
-            --output text || echo "0")
-          if [[ "$ROOT_COUNT" -gt "0" ]]; then
-            terraform import aws_route53_record.root_alias ${HOSTED_ZONE_ID}_${DOMAIN}_A || true
-          else
-            terraform state rm -allow-missing aws_route53_record.root_alias || true
-          fi
+          # Root alias
+          terraform import aws_route53_record.root_alias ${HOSTED_ZONE_ID}_${DOMAIN}_A || true
 
-          # Check www record exists
-          WWW_NAME="www.${DOMAIN}."
-          WWW_COUNT=$(aws route53 list-resource-record-sets \
-            --hosted-zone-id "$HOSTED_ZONE_ID" \
-            --query "ResourceRecordSets[?Name=='${WWW_NAME}'] | length(@)" \
-            --output text || echo "0")
-          if [[ "$WWW_COUNT" -gt "0" ]]; then
-            terraform import aws_route53_record.www_alias ${HOSTED_ZONE_ID}_www.${DOMAIN}_A || true
-          else
-            terraform state rm -allow-missing aws_route53_record.www_alias || true
+          # www alias: if in state, remove, then import correct name
+          if terraform state list | grep -q '^aws_route53_record\.www_alias$'; then
+            terraform state rm aws_route53_record.www_alias
           fi
+          terraform import aws_route53_record.www_alias ${HOSTED_ZONE_ID}_www_A || true
         fi
 
     - name: Terraform Plan
