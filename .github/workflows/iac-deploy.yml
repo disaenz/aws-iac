@@ -23,81 +23,108 @@ jobs:
       AWS_REGION: ${{ secrets.AWS_REGION }}
       DOMAIN: "daniel-saenz.com"
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v2
-      with:
-        aws-access-key-id:     ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region:            ${{ env.AWS_REGION }}
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id:     ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region:            ${{ env.AWS_REGION }}
 
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v2
-      with:
-        terraform_version: "1.5.7"
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: "1.5.7"
 
-    - name: Terraform Init
-      run: terraform init
+      - name: Terraform Init
+        run: terraform init
 
-    - name: Resolve AWS resource IDs
-      id: resolve_ids
-      run: |
-        # CloudFront OAI ID
-        OAI_ID=$(aws cloudfront list-cloud-front-origin-access-identities \
-          --query "CloudFrontOriginAccessIdentityList.Items[?Comment=='Origin Access Identity for portfolio site'].Id | [0]" \
-          --output text || echo "")
-        echo "OAI_ID=$OAI_ID" >> $GITHUB_ENV
+      - name: Resolve AWS resource IDs
+        id: resolve_ids
+        run: |
+          OAI_ID=$(aws cloudfront list-cloud-front-origin-access-identities \
+            --query "CloudFrontOriginAccessIdentityList.Items[?Comment=='Origin Access Identity for portfolio site'].Id | [0]" \
+            --output text || echo "")
+          echo "OAI_ID=$OAI_ID" >> $GITHUB_ENV
 
-        # CloudFront Distribution ID
-        DISTRIBUTION_ID=$(aws cloudfront list-distributions \
-          --query "DistributionList.Items[?contains(Aliases.Items, '${DOMAIN}')].Id | [0]" \
-          --output text || echo "")
-        echo "DISTRIBUTION_ID=$DISTRIBUTION_ID" >> $GITHUB_ENV
+          DISTRIBUTION_ID=$(aws cloudfront list-distributions \
+            --query "DistributionList.Items[?contains(Aliases.Items, '${DOMAIN}')].Id | [0]" \
+            --output text || echo "")
+          echo "DISTRIBUTION_ID=$DISTRIBUTION_ID" >> $GITHUB_ENV
 
-        # Hosted Zone ID
-        HOSTED_ZONE_ID=$(aws route53 list-hosted-zones-by-name \
-          --dns-name $DOMAIN \
-          --query "HostedZones[0].Id" \
-          --output text | cut -d'/' -f3 || echo "")
-        echo "HOSTED_ZONE_ID=$HOSTED_ZONE_ID" >> $GITHUB_ENV
+          HOSTED_ZONE_ID=$(aws route53 list-hosted-zones-by-name \
+            --dns-name $DOMAIN \
+            --query "HostedZones[0].Id" \
+            --output text | cut -d'/' -f3 || echo "")
+          echo "HOSTED_ZONE_ID=$HOSTED_ZONE_ID" >> $GITHUB_ENV
 
-    - name: Import existing resources into state
-      run: |
-        # Import S3 bucket and configs
-        if aws s3api head-bucket --bucket "$TF_VAR_bucket_name" 2>/dev/null; then
-          terraform import aws_s3_bucket.static_site $TF_VAR_bucket_name
-          terraform import aws_s3_bucket_public_access_block.static_site $TF_VAR_bucket_name || true
-          terraform import aws_s3_bucket_website_configuration.static_site $TF_VAR_bucket_name || true
-          terraform import aws_s3_bucket_policy.static_site_policy $TF_VAR_bucket_name || true
-        fi
-
-        # Import CloudFront OAI
-        if [[ -n "$OAI_ID" && "$OAI_ID" != "None" ]]; then
-          terraform import aws_cloudfront_origin_access_identity.oai $OAI_ID
-        fi
-
-        # Import CloudFront Distribution
-        if [[ -n "$DISTRIBUTION_ID" && "$DISTRIBUTION_ID" != "None" ]]; then
-          terraform import aws_cloudfront_distribution.static_site $DISTRIBUTION_ID
-        fi
-
-        # Import Route53 records
-        if [[ -n "$HOSTED_ZONE_ID" && "$HOSTED_ZONE_ID" != "None" ]]; then
-          # Root alias
-          terraform import aws_route53_record.root_alias ${HOSTED_ZONE_ID}_${DOMAIN}_A || true
-
-          # www alias: if in state, remove, then import correct name
-          if terraform state list | grep -q '^aws_route53_record\.www_alias$'; then
-            terraform state rm aws_route53_record.www_alias
+      - name: Import existing resources into state
+        run: |
+          # Import S3 bucket and configs
+          if aws s3api head-bucket --bucket "$TF_VAR_bucket_name" 2>/dev/null; then
+            if ! terraform state list | grep -q '^aws_s3_bucket\.static_site$'; then
+              terraform import aws_s3_bucket.static_site $TF_VAR_bucket_name
+            fi
+            if ! terraform state list | grep -q '^aws_s3_bucket_public_access_block\.static_site$'; then
+              terraform import aws_s3_bucket_public_access_block.static_site $TF_VAR_bucket_name
+            fi
+            if ! terraform state list | grep -q '^aws_s3_bucket_website_configuration\.static_site$'; then
+              terraform import aws_s3_bucket_website_configuration.static_site $TF_VAR_bucket_name
+            fi
+            if ! terraform state list | grep -q '^aws_s3_bucket_policy\.static_site_policy$'; then
+              terraform import aws_s3_bucket_policy.static_site_policy $TF_VAR_bucket_name
+            fi
           fi
-          terraform import aws_route53_record.www_alias ${HOSTED_ZONE_ID}_www_A || true
-        fi
 
-    - name: Terraform Plan
-      run: terraform plan -out=tfplan
+          # Import CloudFront OAI if it exists and not in state
+          if [[ -n "$OAI_ID" && "$OAI_ID" != "None" ]]; then
+            if ! terraform state list | grep -q '^aws_cloudfront_origin_access_identity\.oai$'; then
+              terraform import aws_cloudfront_origin_access_identity.oai $OAI_ID
+            fi
+          fi
 
-    - name: Terraform Apply
-      if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
-      run: terraform apply -input=false -auto-approve tfplan
+          # Import CloudFront Distribution if it exists and not in state
+          if [[ -n "$DISTRIBUTION_ID" && "$DISTRIBUTION_ID" != "None" ]]; then
+            if ! terraform state list | grep -q '^aws_cloudfront_distribution\.static_site$'; then
+              terraform import aws_cloudfront_distribution.static_site $DISTRIBUTION_ID
+            fi
+          fi
+
+          # Import Route53 records ONLY if A record exists in AWS
+          if [[ -n "$HOSTED_ZONE_ID" && "$HOSTED_ZONE_ID" != "None" ]]; then
+            # Root alias A record
+            ROOT_A_EXISTS=$(aws route53 list-resource-record-sets \
+              --hosted-zone-id "$HOSTED_ZONE_ID" \
+              --query "ResourceRecordSets[?Name=='${DOMAIN}.' && Type=='A'] | length(@)" \
+              --output text)
+            if [[ "$ROOT_A_EXISTS" -gt 0 ]]; then
+              if ! terraform state list | grep -q '^aws_route53_record\.root_alias$'; then
+                terraform import aws_route53_record.root_alias ${HOSTED_ZONE_ID}_${DOMAIN}_A
+              fi
+            else
+              echo "No root_alias A record found for ${DOMAIN}. -- skipping import"
+            fi
+
+            # www alias A record
+            WWW_A_EXISTS=$(aws route53 list-resource-record-sets \
+              --hosted-zone-id "$HOSTED_ZONE_ID" \
+              --query "ResourceRecordSets[?Name=='www.${DOMAIN}.' && Type=='A'] | length(@)" \
+              --output text)
+            if [[ "$WWW_A_EXISTS" -gt 0 ]]; then
+              if terraform state list | grep -q '^aws_route53_record\.www_alias$'; then
+                terraform state rm aws_route53_record.www_alias
+              fi
+              terraform import aws_route53_record.www_alias ${HOSTED_ZONE_ID}_www_A
+            else
+              echo "No www_alias A record found for www.${DOMAIN}. -- skipping import"
+            fi
+          fi
+
+      - name: Terraform Plan
+        run: terraform plan -out=tfplan
+
+      - name: Terraform Apply
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+        run: terraform apply -input=false -auto-approve tfplan
