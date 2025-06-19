@@ -38,7 +38,7 @@ jobs:
     - name: Terraform Init
       run: terraform init
 
-    - name: Resolve AWS resource IDs (skip on errors)
+    - name: Resolve AWS resource IDs
       id: resolve_ids
       run: |
         # CloudFront OAI ID
