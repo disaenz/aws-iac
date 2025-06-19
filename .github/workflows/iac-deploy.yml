@@ -88,8 +88,10 @@ jobs:
           # Root alias
           terraform import aws_route53_record.root_alias ${HOSTED_ZONE_ID}_${DOMAIN}_A || true
 
-          # www alias: remove any existing state then import correct name
-          terraform state rm aws_route53_record.www_alias || true
+          # www alias: if in state, remove, then import correct name
+          if terraform state list | grep -q '^aws_route53_record\.www_alias$'; then
+            terraform state rm aws_route53_record.www_alias
+          fi
           terraform import aws_route53_record.www_alias ${HOSTED_ZONE_ID}_www_A || true
         fi
 
