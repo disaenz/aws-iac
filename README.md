@@ -1,4 +1,4 @@
-# AWS Infrastructure as Code (IaC) for Portfolio
+# AWS Infrastructure as Code (IaC)
 
 This repository contains all the Terraform configurations required to provision and manage the AWS infrastructure for my personal portfolio site. Everything—from the S3 static site bucket to CloudFront CDN, origin access, and Route 53 DNS records—is (more to come) defined here as code and deployed via a CI/CD pipeline.
 
