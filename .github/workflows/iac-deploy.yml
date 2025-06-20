@@ -20,8 +20,9 @@ jobs:
     runs-on: ubuntu-latest
     env:
       TF_VAR_bucket_name: ${{ secrets.BUCKET_NAME }}
+      TF_VAR_domain_name: ${{ secrets.DOMAIN_NAME }}
       AWS_REGION: ${{ secrets.AWS_REGION }}
-      DOMAIN: "daniel-saenz.com"
+      DOMAIN: "${{ secrets.DOMAIN_NAME }}"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
