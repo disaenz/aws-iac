@@ -79,7 +79,7 @@ resource "aws_s3_bucket_policy" "static_site_policy" {
 #---------------------------------
 data "aws_acm_certificate" "cert" {
   provider    = aws.acm_east1
-  domain      = "daniel-saenz.com"
+  domain      = var.domain_name
   statuses    = ["ISSUED"]
   most_recent = true
 }
@@ -93,8 +93,8 @@ resource "aws_cloudfront_distribution" "static_site" {
   default_root_object = "index.html"
 
   aliases = [
-    "daniel-saenz.com",
-    "www.daniel-saenz.com",
+    var.domain_name,
+    "www.${var.domain_name}",
   ]
 
   origin {
@@ -139,7 +139,7 @@ resource "aws_cloudfront_distribution" "static_site" {
 # 8. Route53 DNS Records
 #---------------------------------
 data "aws_route53_zone" "primary" {
-  name         = "daniel-saenz.com."
+  name         = "${var.domain_name}."
   private_zone = false
 }
 
