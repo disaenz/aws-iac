@@ -1,5 +1,5 @@
 provider "aws" {
-  region = "us-east-2"
+  region = var.aws_region
 }
 
 # Provider alias for ACM lookups in us-east-1 (for CloudFront certificates)

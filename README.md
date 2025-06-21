@@ -42,25 +42,21 @@ This repository contains all the Terraform configurations required to provision 
    cd aws-iac
    ```
 
-2. **Configure backend** (if using remote state, update `backend.tf`).
-
-3. **Initialize Terraform**
+2. **🚀 First-Time Bootstrap**  
+Before your CI pipeline can manage Terraform state in S3, you must run an initial local provisioning step to create the bucket and push the state file up. For example:
 
    ```bash
+   # Initialize Terraform locally
    terraform init
+
+   # Apply to provision resources and generate terraform.tfstate
+   terraform apply -auto-approve
+
+   # Upload the state file into S3 (replace BUCKET and KEY as needed)
+   aws s3 cp terraform.tfstate s3://$BUCKET_NAME/iac/terraform.tfstate
    ```
 
-4. **Review plan**
-
-   ```bash
-   terraform plan -out=tfplan
-   ```
-
-5. **Apply changes**
-
-   ```bash
-   terraform apply tfplan
-   ```
+ Once that’s done, your GitHub Actions pipeline will automatically pick up the S3-backed state for all future runs.
 
 ---
 
