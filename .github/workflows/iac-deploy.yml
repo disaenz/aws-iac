@@ -22,7 +22,7 @@ env:
 
 jobs:
   terraform:
-    name: 🔨 Terraform IaC
+    name: 🔨 Terraform IaC Pipeline
     runs-on: ubuntu-latest
     steps:
 
