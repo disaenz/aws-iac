@@ -7,3 +7,8 @@ variable "domain_name" {
   description = "The custom domain for the site"
   type        = string
 }
+
+variable "aws_region" {
+  description = "AWS default region to use"
+  type        = string
+}
