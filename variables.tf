@@ -12,3 +12,9 @@ variable "aws_region" {
   description = "AWS default region to use"
   type        = string
 }
+
+variable "ecr_repository_name" {
+  description = "Generic ECR repo for all portfolio services"
+  type        = string
+  default     = "portfolio-services"
+}

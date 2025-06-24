@@ -44,8 +44,8 @@ jobs:
       - name: Terraform Init (S3 backend)
         run: |
           terraform init -reconfigure \
-            -backend-config="bucket=${TF_VAR_bucket_name}" \
-            -backend-config="key=iac/terraform.tfstate" \
+            -backend-config="bucket=${TF_VAR_bucket_name}-iac" \
+            -backend-config="key=terraform.tfstate" \
             -backend-config="region=${TF_VAR_aws_region}" \
             -backend-config="encrypt=true"
 

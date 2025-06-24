@@ -1,13 +1,3 @@
-provider "aws" {
-  region = var.aws_region
-}
-
-# Provider alias for ACM lookups in us-east-1 (for CloudFront certificates)
-provider "aws" {
-  alias  = "acm_east1"
-  region = "us-east-1"
-}
-
 #---------------------------------
 # 1. S3 Bucket (Private)
 #---------------------------------
@@ -78,7 +68,7 @@ resource "aws_s3_bucket_policy" "static_site_policy" {
 # 6. ACM Certificate lookup
 #---------------------------------
 data "aws_acm_certificate" "cert" {
-  provider    = aws.acm_east1
+  provider    = aws.east1
   domain      = var.domain_name
   statuses    = ["ISSUED"]
   most_recent = true

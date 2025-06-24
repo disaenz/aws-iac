@@ -7,4 +7,5 @@ crash.log
 
 # Local helpers & env scripts
 run-iac.sh
+run-iac-import.sh
 .env
