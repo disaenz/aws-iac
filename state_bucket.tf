@@ -1,15 +1,5 @@
-# 1) State bucket
 resource "aws_s3_bucket" "terraform_state" {
   bucket = "${var.bucket_name}-iac"
-
-  # server-side encryption at rest
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        sse_algorithm = "AES256"
-      }
-    }
-  }
 
   tags = {
     Environment = "iac"
@@ -17,7 +7,16 @@ resource "aws_s3_bucket" "terraform_state" {
   }
 }
 
-# 2) Block all public access
+resource "aws_s3_bucket_server_side_encryption_configuration" "terraform_state" {
+  bucket = aws_s3_bucket.terraform_state.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
+    }
+  }
+}
+
 resource "aws_s3_bucket_public_access_block" "terraform_state" {
   bucket                  = aws_s3_bucket.terraform_state.id
   block_public_acls       = true

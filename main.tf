@@ -68,7 +68,7 @@ resource "aws_s3_bucket_policy" "static_site_policy" {
 # 6. ACM Certificate lookup
 #---------------------------------
 data "aws_acm_certificate" "cert" {
-  provider    = aws.acm_east1
+  provider    = aws.east1
   domain      = var.domain_name
   statuses    = ["ISSUED"]
   most_recent = true
