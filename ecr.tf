@@ -4,7 +4,7 @@ resource "aws_ecrpublic_repository" "services" {
   catalog_data {
     description = "Container images for portfolio services"
   }
-  
+
   tags = {
     Environment = "production"
     Project     = "portfolio"
@@ -13,5 +13,5 @@ resource "aws_ecrpublic_repository" "services" {
 
 output "ecr_public_repository_url" {
   description = "Public ECR repository URI"
-  value       = aws_ecrpublic_repository.services.repository_url
+  value       = aws_ecrpublic_repository.services.repository_uri
 }
