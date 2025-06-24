@@ -1,6 +1,5 @@
 resource "aws_ecrpublic_repository" "services" {
   repository_name      = var.ecr_repository_name
-  image_tag_mutability = "MUTABLE"
 
   catalog_data {
     description = "Container images for portfolio services"
