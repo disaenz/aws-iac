@@ -4,11 +4,7 @@ resource "aws_ecrpublic_repository" "services" {
   catalog_data {
     description = "Container images for portfolio services"
   }
-
-  image_scanning_configuration {
-    scan_on_push = true
-  }
-
+  
   tags = {
     Environment = "production"
     Project     = "portfolio"
