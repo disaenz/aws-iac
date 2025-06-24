@@ -1,13 +1,3 @@
-provider "aws" {
-  region = var.aws_region
-}
-
-# Provider alias for ACM lookups in us-east-1 (for CloudFront certificates)
-provider "aws" {
-  alias  = "acm_east1"
-  region = "us-east-1"
-}
-
 #---------------------------------
 # 1. S3 Bucket (Private)
 #---------------------------------

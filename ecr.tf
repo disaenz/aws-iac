@@ -1,7 +1,3 @@
-provider "aws" {
-  region = var.aws_region
-}
-
 resource "aws_ecrpublic_repository" "services" {
   repository_name      = var.ecr_repository_name
   image_tag_mutability = "MUTABLE"
