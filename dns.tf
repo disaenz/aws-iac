@@ -27,7 +27,7 @@ resource "aws_apigatewayv2_domain_name" "api" {
   domain_name = "api.${var.domain_name}"
 
   domain_name_configuration {
-    certificate_arn = data.aws_acm_certificate.wildcard.arn
+    certificate_arn = data.aws_acm_certificate.api.arn
     endpoint_type   = "REGIONAL"
     security_policy = "TLS_1_2"
   }
