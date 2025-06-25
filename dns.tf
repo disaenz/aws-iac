@@ -31,17 +31,20 @@ resource "aws_acm_certificate" "api" {
 }
 
 resource "aws_route53_record" "api_cert_validation" {
+  for_each = {
+    for dvo in aws_acm_certificate.api.domain_validation_options : dvo.domain_name => dvo
+  }
   zone_id = data.aws_route53_zone.primary.zone_id
-  name    = aws_acm_certificate.api.domain_validation_options[0].resource_record_name
-  type    = aws_acm_certificate.api.domain_validation_options[0].resource_record_type
-  records = [aws_acm_certificate.api.domain_validation_options[0].resource_record_value]
+  name    = each.value.resource_record_name
+  type    = each.value.resource_record_type
+  records = [each.value.resource_record_value]
   ttl     = 60
 }
 
 resource "aws_acm_certificate_validation" "api" {
-  provider                  = aws.east1
-  certificate_arn           = aws_acm_certificate.api.arn
-  validation_record_fqdns   = [aws_route53_record.api_cert_validation.fqdn]
+  provider                = aws.east1
+  certificate_arn         = aws_acm_certificate.api.arn
+  validation_record_fqdns = [for r in aws_route53_record.api_cert_validation : r.fqdn]
 }
 
 resource "aws_apigatewayv2_domain_name" "api" {
