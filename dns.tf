@@ -22,36 +22,12 @@ resource "aws_route53_record" "www_alias" {
   }
 }
 
-#---------------------Custom Domain (api.${var.domain_name}) onto your HTTP API---------------------
-
-resource "aws_acm_certificate" "api" {
-  provider          = aws.east1
-  domain_name       = "api.${var.domain_name}"
-  validation_method = "DNS"
-}
-
-resource "aws_route53_record" "api_cert_validation" {
-  for_each = {
-    for dvo in aws_acm_certificate.api.domain_validation_options : dvo.domain_name => dvo
-  }
-  zone_id = data.aws_route53_zone.primary.zone_id
-  name    = each.value.resource_record_name
-  type    = each.value.resource_record_type
-  records = [each.value.resource_record_value]
-  ttl     = 60
-}
-
-resource "aws_acm_certificate_validation" "api" {
-  provider                = aws.east1
-  certificate_arn         = aws_acm_certificate.api.arn
-  validation_record_fqdns = [for r in aws_route53_record.api_cert_validation : r.fqdn]
-}
-
+# -- Use your existing ACM cert for api subdomain --
 resource "aws_apigatewayv2_domain_name" "api" {
   domain_name = "api.${var.domain_name}"
 
   domain_name_configuration {
-    certificate_arn = aws_acm_certificate_validation.api.certificate_arn
+    certificate_arn = data.aws_acm_certificate.wildcard.arn
     endpoint_type   = "REGIONAL"
     security_policy = "TLS_1_2"
   }

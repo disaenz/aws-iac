@@ -7,4 +7,10 @@ resource "aws_lambda_function" "grant_api" {
   # if app is too slow, you can increase memory here
   memory_size = 128
   timeout     = 10
+
+  environment {
+    variables = {
+      DATABASE_URL = var.database_url
+    }
+  }
 }

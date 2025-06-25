@@ -23,3 +23,9 @@ variable "grant_api_image_uri" {
   description = "Grant API image URI in public ECR"
   type        = string
 }
+
+variable "database_url" {
+  description = "NeonDB connection string"
+  type        = string
+  sensitive   = true
+}
