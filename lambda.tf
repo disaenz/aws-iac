@@ -1,12 +1,15 @@
+data "aws_ecr_repository" "grant_api" {
+  name = aws_ecr_repository.grant_api.name
+}
+
 resource "aws_lambda_function" "grant_api" {
   function_name = "grant-api"
   package_type  = "Image"
-  image_uri     = var.grant_api_image_uri
+  image_uri     = "${data.aws_ecr_repository.grant_api.repository_url}:latest"
   role          = aws_iam_role.lambda_exec.arn
 
-  # if app is too slow, you can increase memory here
-  memory_size = 128
-  timeout     = 10
+  memory_size   = 128
+  timeout       = 10
 
   environment {
     variables = {
