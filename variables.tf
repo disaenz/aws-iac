@@ -18,3 +18,8 @@ variable "ecr_api_repository_name" {
   type        = string
   default     = "grant-api"
 }
+
+variable "grant_api_image_uri" {
+  description = "Grant API image URI in public ECR"
+  type        = string
+}

@@ -18,6 +18,7 @@ env:
   TF_VAR_bucket_name: ${{ secrets.BUCKET_NAME }}
   TF_VAR_domain_name: ${{ secrets.DOMAIN_NAME }}
   TF_VAR_aws_region:   ${{ secrets.AWS_REGION }}
+  TF_VAR_grant_api_image_uri: ${{secrets.API_IMAGE_URI}}
   AWS_REGION:          ${{ secrets.AWS_REGION }}
 
 jobs:
