@@ -13,8 +13,8 @@ variable "aws_region" {
   type        = string
 }
 
-variable "ecr_repository_name" {
+variable "ecr_api_repository_name" {
   description = "Generic ECR repo for all portfolio services"
   type        = string
-  default     = "portfolio-services"
+  default     = "grant-api"
 }

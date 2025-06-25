@@ -1,6 +1,6 @@
 resource "aws_ecrpublic_repository" "services" {
   provider        = aws.east1
-  repository_name = var.ecr_repository_name
+  repository_name = var.ecr_api_repository_name
 
   catalog_data {
     description = "Container images for portfolio services"
