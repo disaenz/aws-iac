@@ -1,18 +1,7 @@
-resource "aws_ecrpublic_repository" "services" {
-  provider        = aws.east1
-  repository_name = var.ecr_api_repository_name
-
-  catalog_data {
-    description = "Container images for portfolio services"
+resource "aws_ecr_repository" "grant_api" {
+  name = "grant-api"
+  image_scanning_configuration {
+    scan_on_push = true
   }
-
-  tags = {
-    Environment = "production"
-    Project     = "portfolio"
-  }
-}
-
-output "ecr_public_repository_url" {
-  description = "Public ECR repository URI"
-  value       = aws_ecrpublic_repository.services.repository_uri
+  force_delete = true
 }
