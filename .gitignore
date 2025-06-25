@@ -9,3 +9,4 @@ crash.log
 run-iac.sh
 run-iac-import.sh
 .env
+.config
