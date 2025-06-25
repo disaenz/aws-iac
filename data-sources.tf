@@ -11,12 +11,3 @@ data "aws_route53_zone" "primary" {
   name         = "${var.domain_name}."
   private_zone = false
 }
-
-
-# Lookup existing cert in us-east-1 by domain name
-data "aws_acm_certificate" "api" {
-  provider    = aws.east1
-  domain      = "*.${var.domain_name}"
-  statuses    = ["ISSUED"]
-  most_recent = true
-}
