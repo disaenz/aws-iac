@@ -11,3 +11,6 @@ data "aws_route53_zone" "primary" {
   name         = "${var.domain_name}."
   private_zone = false
 }
+
+# AWS account identity (for ECR repo policies etc.)
+data "aws_caller_identity" "current" {}

@@ -12,6 +12,7 @@ resource "aws_ecr_repository_policy" "grant_api_lambda_pull" {
   policy = jsonencode({
     Version = "2008-10-17",
     Statement = [
+      # Allow Lambda to pull
       {
         Sid = "AllowLambdaPull",
         Effect = "Allow",
@@ -22,6 +23,23 @@ resource "aws_ecr_repository_policy" "grant_api_lambda_pull" {
           "ecr:GetDownloadUrlForLayer",
           "ecr:BatchGetImage",
           "ecr:BatchCheckLayerAvailability"
+        ]
+      },
+      # Allow your account to push/pull
+      {
+        Sid = "AllowAccountPushPull",
+        Effect = "Allow",
+        Principal = {
+          AWS = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
+        },
+        Action = [
+          "ecr:GetDownloadUrlForLayer",
+          "ecr:BatchGetImage",
+          "ecr:BatchCheckLayerAvailability",
+          "ecr:PutImage",
+          "ecr:InitiateLayerUpload",
+          "ecr:UploadLayerPart",
+          "ecr:CompleteLayerUpload"
         ]
       }
     ]
