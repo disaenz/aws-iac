@@ -3,6 +3,15 @@
 This repository contains all the Terraform configurations required to provision and manage the AWS infrastructure for my personal portfolio site. Everything—from the S3 static site bucket to CloudFront CDN, origin access, and Route 53 DNS records—is (more to come) defined here as code and deployed via a CI/CD pipeline.
 
 ---
+## 📑 Table of Contents
+- [Overview](#-overview)
+- [Prerequisites](#-prerequisites)
+- [Getting Started (Local)](#-getting-started-local)
+- [CI/CD Pipeline](#ci-cd-pipeline)
+- [Variables](#-variables)
+- [Outputs](#-outputs)
+- [License & Attribution](#-license--attribution)
+---
 
 ## 🚀 Overview
 
@@ -15,7 +24,7 @@ This repository contains all the Terraform configurations required to provision 
   * **AWS ECR**: Registry to host your Docker images
   * **API Gateway**: API configuration for serverless API
   * **Lambda**: Lambda function that runs Docker Container 
-  * **CloudWatch**: To save application logs (retantion 3 days only)
+  * **CloudWatch**: To save application logs (retention 3 days only)
 * **Pipeline**: Fully automated GitHub Actions workflow for `terraform init`, `plan`, and `apply` on merges to `main`.
 
 ---
@@ -32,8 +41,8 @@ This repository contains all the Terraform configurations required to provision 
    * `AWS_ACCESS_KEY_ID` - Get it from your AWS user
    * `AWS_SECRET_ACCESS_KEY` - Get it from your AWS user
    * `AWS_REGION` - Default region where you plan to deploy your infra
-   * `BUCKET_NAME` - s3 where portfolio will be deployed 
-   * `DOMAIN_NAME` - your custom domain name (you need this prior)
+   * `BUCKET_NAME` - S3 where portfolio will be deployed 
+   * `DOMAIN_NAME` - Your custom domain name (you need this prior)
    * `API_IMAGE_URI` - This is needed to find API image in ECR
    * `DATABASE_URL` -  API microservice needs this env set 
 
@@ -104,6 +113,6 @@ Check `variables.tf` for full list.
 
 ## ⚖️ License & Attribution
 
-This code is open source under the MIT License. Feel free to fork and adapt—please credit the original author.
+This project is open source under the [MIT License](./LICENSE).  
 
 © 2025 Daniel Saenz
