@@ -104,6 +104,7 @@ Check `variables.tf` for full list.
 
 ## ⚖️ License & Attribution
 
+This repository is a personal portfolio maintained by Daniel Saenz. Feel free to fork and adapt it for your own use. If you do, please credit the original author in your project documentation or README.
 This project is open source under the [MIT License](./license.md).  
 
 © 2025 Daniel Saenz
