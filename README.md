@@ -12,6 +12,10 @@ This repository contains all the Terraform configurations required to provision 
   * **S3**: Private bucket for hosting static assets
   * **CloudFront**: CDN distribution with Origin Access Identity
   * **Route 53**: DNS zone and alias records for custom domain
+  * **AWS ECR**: Registry to host your Docker images
+  * **API Gateway**: API configuration for serverless API
+  * **Lambda**: Lambda function that runs Docker Container 
+  * **CloudWatch**: To save application logs (retantion 3 days only)
 * **Pipeline**: Fully automated GitHub Actions workflow for `terraform init`, `plan`, and `apply` on merges to `main`.
 
 ---
@@ -25,11 +29,13 @@ This repository contains all the Terraform configurations required to provision 
    * `acm:ListCertificates` in us-east-1
 3. **GitHub repository secrets** set:
 
-   * `AWS_ACCESS_KEY_ID`
-   * `AWS_SECRET_ACCESS_KEY`
-   * `AWS_REGION` 
-   * `BUCKET_NAME` 
-   * `DOMAIN_NAME` 
+   * `AWS_ACCESS_KEY_ID` - Get it from your AWS user
+   * `AWS_SECRET_ACCESS_KEY` - Get it from your AWS user
+   * `AWS_REGION` - Default region where you plan to deploy your infra
+   * `BUCKET_NAME` - s3 where portfolio will be deployed 
+   * `DOMAIN_NAME` - your custom domain name (you need this prior)
+   * `API_IMAGE_URI` - This is needed to find API image in ECR
+   * `DATABASE_URL` -  API microservice needs this env set 
 
 ---
 
@@ -53,7 +59,7 @@ Before your CI pipeline can manage Terraform state in S3, you must run an initia
    terraform apply -auto-approve
 
    # Upload the state file into S3 (replace BUCKET and KEY as needed)
-   aws s3 cp terraform.tfstate s3://$BUCKET_NAME/iac/terraform.tfstate
+   aws s3 cp terraform.tfstate s3://$BUCKET_NAME-iac/terraform.tfstate
    ```
 
  Once that’s done, your GitHub Actions pipeline will automatically pick up the S3-backed state for all future runs.
@@ -80,6 +86,10 @@ All pipeline logs and status checks must pass before merging.
 | `bucket_name` | S3 bucket to host the static site | **Required** |
 | `domain_name` | Custom domain for Route 53        | **Required** |
 | `aws_region`  | AWS region for resources          | `us-east-2`  |
+| `ecr_api_repository_name`  | AWS ECR repository name          | **Required**  |
+| `grant_api_image_uri`  | ECR uri to PULL and PUSH          | **Required**  |
+| `database_url`  | Microservice env for Database          | **Required**  |
+
 
 Check `variables.tf` for full list.
 
@@ -89,7 +99,6 @@ Check `variables.tf` for full list.
 
 * `cloudfront_domain_name`: The generated CloudFront distribution domain.
 * `website_endpoint`: The S3 static website endpoint (useful for testing).
-* `route53_zone_id`: The hosted zone ID for DNS.
 
 ---
 
