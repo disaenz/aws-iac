@@ -3,15 +3,6 @@
 This repository contains all the Terraform configurations required to provision and manage the AWS infrastructure for my personal portfolio site. Everything—from the S3 static site bucket to CloudFront CDN, origin access, and Route 53 DNS records—is (more to come) defined here as code and deployed via a CI/CD pipeline.
 
 ---
-## 📑 Table of Contents
-- [Overview](#-overview)
-- [Prerequisites](#-prerequisites)
-- [Getting Started (Local)](#-getting-started-local)
-- [CI/CD Pipeline](#ci-cd-pipeline)
-- [Variables](#-variables)
-- [Outputs](#-outputs)
-- [License & Attribution](#-license-&-attribution)
----
 
 ## 🚀 Overview
 
@@ -47,7 +38,7 @@ This repository contains all the Terraform configurations required to provision 
    * `DATABASE_URL` -  API microservice needs this env set 
 
 ---
-<a name="getting-started-local"></a>
+
 ## ⚙️ Getting Started (Local)
 
 1. **Clone the repo**
@@ -113,6 +104,6 @@ Check `variables.tf` for full list.
 
 ## ⚖️ License & Attribution
 
-This project is open source under the [MIT License](./LICENSE).  
+This project is open source under the [MIT License](./LICENSE.md).  
 
 © 2025 Daniel Saenz
