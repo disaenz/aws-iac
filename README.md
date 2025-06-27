@@ -10,7 +10,7 @@ This repository contains all the Terraform configurations required to provision 
 - [CI/CD Pipeline](#ci-cd-pipeline)
 - [Variables](#-variables)
 - [Outputs](#-outputs)
-- [License & Attribution](#-license--attribution)
+- [License & Attribution](#-license-&-attribution)
 ---
 
 ## 🚀 Overview
@@ -47,7 +47,7 @@ This repository contains all the Terraform configurations required to provision 
    * `DATABASE_URL` -  API microservice needs this env set 
 
 ---
-
+<a name="getting-started-local"></a>
 ## ⚙️ Getting Started (Local)
 
 1. **Clone the repo**
