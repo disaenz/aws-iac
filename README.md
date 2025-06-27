@@ -104,6 +104,6 @@ Check `variables.tf` for full list.
 
 ## ⚖️ License & Attribution
 
-This project is open source under the [MIT License](./LICENSE.md).  
+This project is open source under the [MIT License](./license.md).  
 
 © 2025 Daniel Saenz
