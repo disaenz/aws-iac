@@ -14,9 +14,15 @@ variable "aws_region" {
 }
 
 variable "ecr_api_repository_name" {
-  description = "Generic ECR repo for all portfolio services"
+  description = "Generic ECR repo for grant-api service"
   type        = string
   default     = "grant-api"
+}
+
+variable "ecr_app_repository_name" {
+  description = "Generic ECR repo for grant-app"
+  type        = string
+  default     = "grant-app"
 }
 
 variable "grant_api_image_uri" {
