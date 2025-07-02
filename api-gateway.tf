@@ -55,7 +55,7 @@ resource "aws_apigatewayv2_api" "frontend_app" {
 resource "aws_apigatewayv2_integration" "frontend_lambda" {
   api_id                  = aws_apigatewayv2_api.frontend_app.id
   integration_type        = "AWS_PROXY"
-  integration_uri         = aws_lambda_function.grant_app.function_name 
+  integration_uri         = aws_lambda_function.grant_app.invoke_arn
   payload_format_version  = "2.0"
 }
 
