@@ -19,12 +19,6 @@ variable "ecr_api_repository_name" {
   default     = "grant-api"
 }
 
-variable "ecr_app_repository_name" {
-  description = "Generic ECR repo for grant-app"
-  type        = string
-  default     = "grant-app"
-}
-
 variable "grant_api_image_uri" {
   description = "Grant API image URI in public ECR"
   type        = string
