@@ -29,3 +29,8 @@ variable "database_url" {
   type        = string
   sensitive   = true
 }
+
+variable "grant_app_bucket_name" {
+  description = "S3 bucket name for the Grant App frontend"
+  type        = string
+}

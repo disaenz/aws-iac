@@ -66,3 +66,44 @@ resource "aws_s3_bucket_public_access_block" "terraform_state" {
   ignore_public_acls      = true
   restrict_public_buckets = true
 }
+
+#-------------------------------------GRANT APP SITE-------------------------------------
+resource "aws_s3_bucket" "grant_app_site" {
+  bucket = var.grant_app_bucket_name
+}
+
+resource "aws_s3_bucket_public_access_block" "grant_app_site" {
+  bucket                  = aws_s3_bucket.grant_app_site.id
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+resource "aws_s3_bucket_website_configuration" "grant_app_site" {
+  bucket = aws_s3_bucket.grant_app_site.id
+  index_document { suffix = "index.html" }
+  error_document { key    = "error.html" }
+}
+
+data "aws_iam_policy_document" "grant_app_oai_policy" {
+  statement {
+    sid    = "AllowCloudFrontRead"
+    effect = "Allow"
+    principals {
+      type        = "CanonicalUser"
+      identifiers = [aws_cloudfront_origin_access_identity.oai.s3_canonical_user_id]
+    }
+    actions   = ["s3:GetObject"]
+    resources = ["${aws_s3_bucket.grant_app_site.arn}/*"]
+  }
+}
+
+resource "aws_s3_bucket_policy" "grant_app_site_policy" {
+  bucket = aws_s3_bucket.grant_app_site.id
+  policy = data.aws_iam_policy_document.grant_app_oai_policy.json
+
+  lifecycle {
+    ignore_changes = [policy]
+  }
+}
