@@ -59,7 +59,7 @@ resource "aws_cloudfront_distribution" "grant_app" {
   default_root_object = "index.html"
 
   aliases = [
-    "grants-app.${var.domain_name}"
+    "grants.${var.domain_name}"
   ]
 
   origin {
