@@ -18,20 +18,3 @@ resource "aws_lambda_function" "grant_api" {
     }
   }
 }
-
-
-# --- FRONTEND Lambda ---
-data "aws_ecr_repository" "grant_app" {
-  name = aws_ecr_repository.grant_app.name
-}
-
-resource "aws_lambda_function" "grant_app" {
-  function_name = "grant-app"
-  package_type  = "Image"
-  image_uri     = "${data.aws_ecr_repository.grant_app.repository_url}:latest"
-  role          = aws_iam_role.lambda_exec.arn
-
-  memory_size   = 128   
-  timeout       = 10  
-
-}
