@@ -7,7 +7,7 @@ data "aws_acm_certificate" "cert" {
 }
 
 # ACM cert wildcard for us-east-1 (CloudFront only reads from us-east-1)
-data "aws_acm_certificate" "cert" {
+data "aws_acm_certificate" "wildcard_us_east_1" {
   provider    = aws.east1  
   domain      = "*.${var.domain_name}"
   statuses    = ["ISSUED"]
