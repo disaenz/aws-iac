@@ -30,6 +30,10 @@ resource "aws_cloudfront_distribution" "static_site" {
     cached_methods  = ["GET", "HEAD"]
     compress        = true
 
+    min_ttl     = 3600       # 1 hour
+    default_ttl = 86400      # 24 hours
+    max_ttl     = 604800     # 7 days
+
     forwarded_values {
       query_string = false
       cookies { forward = "none" }
@@ -77,6 +81,10 @@ resource "aws_cloudfront_distribution" "grant_app" {
     allowed_methods = ["GET", "HEAD"]
     cached_methods  = ["GET", "HEAD"]
     compress        = true
+
+    min_ttl     = 3600       # 1 hour
+    default_ttl = 86400      # 24 hours
+    max_ttl     = 604800     # 7 days
 
     forwarded_values {
       query_string = false
