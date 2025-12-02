@@ -13,12 +13,21 @@ variable "aws_region" {
   type        = string
 }
 
+# Existing Grant API ECR variable (Legacy)
 variable "ecr_api_repository_name" {
   description = "Generic ECR repo for grant-api service"
   type        = string
   default     = "grant-api"
 }
 
+# New Portfolio API ECR variable (Future Migration Target)
+variable "ecr_portfolio_repository_name" {
+  description = "Generic ECR repo for portfolio-api service"
+  type        = string
+  default     = "portfolio-api"
+}
+
+# Existing Legacy Grant API image URI variable
 variable "grant_api_image_uri" {
   description = "Grant API image URI in public ECR"
   type        = string
