@@ -87,7 +87,6 @@ All pipeline logs and status checks must pass before merging.
 | `domain_name` | Custom domain for Route 53        | **Required** |
 | `aws_region`  | AWS region for resources          | `us-east-2`  |
 | `ecr_api_repository_name`  | AWS ECR repository name          | **Required**  |
-| `grant_api_image_uri`  | ECR uri to PULL and PUSH          | **Required**  |
 | `database_url`  | Microservice env for Database          | **Required**  |
 
 
