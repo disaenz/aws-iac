@@ -51,13 +51,6 @@ jobs:
             -backend-config="region=${TF_VAR_aws_region}" \
             -backend-config="encrypt=true"
 
-      # 🔥 One-time state cleanup for legacy API Gateway integrations
-      # (Remove this step after a successful apply)
-      - name: Terraform State Cleanup (one-time)
-        run: |
-          terraform state rm aws_apigatewayv2_integration.lambda || echo "lambda integration not in state"
-          terraform state rm aws_apigatewayv2_integration.grant_api_lambda || echo "grant_api_lambda integration not in state"
-
       - name: Terraform Plan
         run: terraform plan -out=tfplan
 
