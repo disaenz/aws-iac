@@ -18,7 +18,6 @@ env:
   TF_VAR_bucket_name: ${{ secrets.BUCKET_NAME }}
   TF_VAR_domain_name: ${{ secrets.DOMAIN_NAME }}
   TF_VAR_aws_region:   ${{ secrets.AWS_REGION }}
-  TF_VAR_grant_api_image_uri: ${{secrets.API_IMAGE_URI}}
   TF_VAR_database_url: ${{secrets.DATABASE_URL}}
   TF_VAR_grant_app_bucket_name: ${{secrets.GRANT_APP_BUCKET_NAME}}
   AWS_REGION:          ${{ secrets.AWS_REGION }}
