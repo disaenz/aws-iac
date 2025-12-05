@@ -36,7 +36,7 @@ This repository contains all the Terraform configurations required to provision 
    * `DOMAIN_NAME` - Your custom domain name (you need this prior)
    * `API_IMAGE_URI` - This is needed to find API image in ECR
    * `DATABASE_URL` -  API microservice needs this env set 
-   * `OPENAI_API_KEY` -  OPENAI KEY needed for AI chatbot
+   * `OPENAI_API_KEY` -  OpenAI Key needed for AI chatbot
 
 ---
 
