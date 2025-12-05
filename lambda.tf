@@ -18,6 +18,7 @@ resource "aws_lambda_function" "portfolio_api" {
   environment {
     variables = {
       DATABASE_URL = var.database_url
+      OPENAI_API_KEY = var.openai_api_key
     }
   }
 }

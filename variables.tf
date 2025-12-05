@@ -25,6 +25,12 @@ variable "database_url" {
   sensitive   = true
 }
 
+variable "openai_api_key" {
+  description = "OpenAI API Key for Portfolio Chatbot"
+  type        = string
+  sensitive   = true
+}
+
 variable "grant_app_bucket_name" {
   description = "S3 bucket name for the Grant App frontend"
   type        = string
