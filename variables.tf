@@ -35,3 +35,8 @@ variable "grant_app_bucket_name" {
   description = "S3 bucket name for the Grant App frontend"
   type        = string
 }
+
+variable "recipient_email" {
+  description = "The email address for recipients of portfolio emails"
+  type        = string
+}

@@ -21,6 +21,7 @@ resource "aws_lambda_function" "portfolio_api" {
       OPENAI_API_KEY  = var.openai_api_key
       SES_SENDER_EMAIL = "noreply@${var.domain_name}"
       SES_REGION       = var.aws_region
+      RECIPIENT_EMAIL = var.recipient_email
     }
   }
 }
