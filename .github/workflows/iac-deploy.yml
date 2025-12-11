@@ -21,6 +21,7 @@ env:
   TF_VAR_database_url: ${{secrets.DATABASE_URL}}
   TF_VAR_openai_api_key: ${{secrets.OPENAI_API_KEY}}
   TF_VAR_grant_app_bucket_name: ${{secrets.GRANT_APP_BUCKET_NAME}}
+  TF_VAR_recipient_email: ${{secrets.RECIPIENT_EMAIL}}
   AWS_REGION:          ${{ secrets.AWS_REGION }}
 
 jobs:
