@@ -31,6 +31,18 @@ variable "openai_api_key" {
   sensitive   = true
 }
 
+variable "openai_model" {
+  description = "OpenAI model used by the portfolio chat and knowledge refresh"
+  type        = string
+  default     = "gpt-4o-mini"
+}
+
+variable "portfolio_site_url" {
+  description = "Deployed portfolio site used by the scheduled knowledge refresh"
+  type        = string
+  default     = "https://daniel-saenz.com"
+}
+
 variable "grant_app_bucket_name" {
   description = "S3 bucket name for the Grant App frontend"
   type        = string

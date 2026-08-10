@@ -89,6 +89,7 @@ All pipeline logs and status checks must pass before merging.
 | `aws_region`  | AWS region for resources          | `us-east-2`  |
 | `ecr_api_repository_name`  | AWS ECR repository name          | **Required**  |
 | `database_url`  | Microservice env for Database          | **Required**  |
+| `portfolio_site_url` | Public portfolio URL used by the refresh worker | `https://daniel-saenz.com` |
 
 
 Check `variables.tf` for full list.
